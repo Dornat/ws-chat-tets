@@ -1,3 +1,9 @@
-export const getUser = store => store.user;
+import {MessageType} from "../lib/types";
 
-export const getMessages = store => store.messages;
+export const getUser = (store): string => {
+  return store.user
+}
+
+export const getMessages = (store): Array<MessageType> => {
+  return store.messages
+}

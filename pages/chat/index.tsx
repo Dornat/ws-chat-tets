@@ -7,26 +7,24 @@ import {getUser} from '../../redux/selectors'
 import {useRouter} from "next/router";
 import {sendMessage, sendSysMessage} from "../../redux/actions";
 
+let socket
+
 const Chat: FC = (): ReactElement => {
   const {id, name} = useSelector(getUser)
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const socket = io('http://localhost:6969', {
-    transports: ['websocket'],
-    rejectUnauthorized: false
-  })
-
   useEffect(() => {
     if (id === undefined) router.push('/')
+
+    socket = io('http://localhost:6969', {
+      transports: ['websocket'],
+      rejectUnauthorized: false
+    })
 
     socket.on('connect', () => {
       console.log(socket.id)
     })
-
-    // socket.on('joined', ({id})  => {
-    //   dispatch(updateUserId(id))
-    // })
 
     socket.emit('join', {id, name}, (err) => {
       if (err) {
@@ -42,7 +40,9 @@ const Chat: FC = (): ReactElement => {
       }
     })
 
-
+    return () => {
+      socket.disconnect()
+    }
   }, [])
 
   const handleMessageSend = (message: string) => {
@@ -63,7 +63,7 @@ const Chat: FC = (): ReactElement => {
       </Head>
 
       <main className="main">
-        <ChatBox onClick={handleMessageSend}/>
+        <ChatBox sendMessageClick={handleMessageSend}/>
       </main>
     </div>
   )

@@ -2,33 +2,31 @@ import React, {FC, ReactElement, useEffect, useRef, useState} from 'react'
 import {
   Button,
   Card,
-  Chip,
   CardActions,
   CardContent,
-  TextField,
   AppBar,
   Toolbar,
   IconButton,
   Typography,
   Icon,
 } from '@material-ui/core'
-import Message from './Message'
-import {getMessages, getUser} from '../../redux/selectors'
+import {getMessages} from '../../redux/selectors'
 import {useSelector} from 'react-redux'
 import {Picker, emojiIndex} from 'emoji-mart'
 import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete'
 import 'emoji-mart/css/emoji-mart.css'
+import {MessageType} from '../../lib/types'
+import MessageHandler from './MessageHandler'
 
 type ChatBoxProps = {
-  onClick: (string) => void
+  sendMessageClick: (string) => void
 }
 
-const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
-  const messages = useSelector(getMessages)
-  const {name} = useSelector(getUser)
-  const [messageInput, setMessageInput] = useState('')
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const messagesEnd = useRef(null)
+const ChatBox: FC<ChatBoxProps> = ({sendMessageClick}): ReactElement => {
+  const messages = useSelector<Array<MessageType>>(getMessages)
+  const [messageInput, setMessageInput] = useState<string>('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false)
+  const messagesEnd = useRef<HTMLDivElement>(null)
 
   const handleInputChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setMessageInput(event.target.value as string)
@@ -55,20 +53,13 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
     if (event) {
       event.preventDefault()
     }
-    onClick(messageInput)
+    sendMessageClick(messageInput)
     setMessageInput('')
-    messagesEnd.current.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})
   }
 
-  const figureOutMessageDirection = ({type, user}) => {
-    if (type === 'system') {
-      return 'center'
-    }
-    if (user === name) {
-      return 'right'
-    }
-    return 'left'
-  }
+  useEffect(() => {
+    messagesEnd.current.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})
+  }, [messages])
 
   return (
     <Card style={{width: 50 + 'vw'}}>
@@ -86,29 +77,9 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
         </Toolbar>
       </AppBar>
       <CardContent style={{overflowY: 'scroll', height: 500}}>
-        {messages.map((message, i) => {
-          const direction = figureOutMessageDirection(message)
-          return <Message key={i} direction={direction} element={
-            direction === 'center'
-              ? <Chip variant="outlined" label={message.content}/>
-              : direction === 'left'
-              ? <TextField
-                disabled
-                multiline
-                label={message.user}
-                defaultValue={message.content}
-                variant="filled"
-                helperText={message.sentAt}
-              />
-              : <TextField
-                disabled
-                multiline
-                defaultValue={message.content}
-                variant="filled"
-                helperText={message.sentAt}
-              />
-          }/>
-        })}
+        {messages.map((message, i) => (
+          <MessageHandler key={i} message={message}/>
+        ))}
         {showEmojiPicker && <Picker set="apple" onSelect={handleSelectEmoji}/>}
         <div ref={messagesEnd}/>
       </CardContent>
@@ -122,7 +93,7 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
             loadingComponent={() => <span>Loading</span>}
             onKeyPress={handleKeyPress}
             onChange={handleInputChange}
-            placeholder="Compose your message and hit ENTER to send"
+            placeholder="Write something"
             trigger={{
               ':': {
                 dataProvider: token =>
