@@ -127,6 +127,7 @@
     .MuiFilledInput-root {
       border-radius: 6px !important;
     }
+
     .MuiFilledInput-underline, .MuiInput-underline {
       border-bottom-style: none;
 
@@ -139,6 +140,12 @@
   &-left {
     @include message;
     justify-content: flex-start;
+
+    .MuiFilledInput-root {
+      .MuiInputBase-input {
+        -webkit-text-fill-color: #343434;
+      }
+    }
   }
 
   &-center {
@@ -149,14 +156,93 @@
   &-right {
     @include message;
     justify-content: flex-end;
-    .MuiFilledInput-root{
+
+    .MuiFilledInput-root {
       &.Mui-disabled {
         background-color: cadetblue;
         padding-top: 12px;
       }
+
       .MuiInputBase-input {
         -webkit-text-fill-color: white;
       }
     }
   }
+}
+
+.MuiCardContent-root {
+  position: relative;
+  .emoji-mart {
+    //top: 330px;
+    bottom: 330px;
+    position: fixed;
+    z-index: 1000;
+  }
+}
+
+.message-form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+
+  .rta {
+    width: 100%;
+    position: relative;
+    border-left: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    //overflow-y: scroll;
+
+    &__autocomplete {
+      position: absolute;
+      width: 300px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      height: 500px;
+      bottom: 100px;
+      overflow-y: scroll;
+
+      ul {
+        list-style: none;
+        text-align: left;
+        margin-bottom: 0;
+      }
+
+      li {
+        margin-bottom: 5px;
+        padding: 3px 20px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: skyblue;
+        }
+      }
+    }
+  }
+}
+
+.message-input {
+  width: 100%;
+  margin-bottom: 0;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+textarea.message-input {
+  height: 40px;
+  flex-grow: 1;
+  line-height: 35px;
+  padding-left: 20px;
+  border-radius: 0;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  min-height: auto;
+  overflow-y: hidden;
+  resize: none;
+  border-left: 1px solid #ccc;
 }

@@ -15,6 +15,9 @@ import {
 import Message from './Message'
 import {getMessages, getUser} from '../../redux/selectors'
 import {useSelector} from 'react-redux'
+import {Picker, emojiIndex} from 'emoji-mart'
+import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete'
+import 'emoji-mart/css/emoji-mart.css'
 
 type ChatBoxProps = {
   onClick: (string) => void
@@ -24,16 +27,37 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
   const messages = useSelector(getMessages)
   const {name} = useSelector(getUser)
   const [messageInput, setMessageInput] = useState('')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const messagesEnd = useRef(null)
 
   const handleInputChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     setMessageInput(event.target.value as string)
   }
 
-  const handleSendClick = () => {
+  const handleKeyPress = (event: React.KeyboardEvent<{ value: unknown }>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      handleSendMessage(null)
+    }
+  }
+
+  const handleEmojiPicker = (event: React.FormEvent) => {
+    event.preventDefault()
+    setShowEmojiPicker(true)
+  }
+
+  const handleSelectEmoji = ({native}) => {
+    setMessageInput(`${messageInput}${native}`)
+    setShowEmojiPicker(false)
+  }
+
+  const handleSendMessage = (event: React.FormEvent) => {
+    if (event) {
+      event.preventDefault()
+    }
     onClick(messageInput)
     setMessageInput('')
-    messagesEnd.current.scrollIntoView({ behavior: 'smooth', block: 'start'})
+    messagesEnd.current.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})
   }
 
   const figureOutMessageDirection = ({type, user}) => {
@@ -45,18 +69,6 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
     }
     return 'left'
   }
-
-  useEffect(() => {
-    const listener = event => {
-      if (event.code === "Enter" || event.code === "NumpadEnter") {
-        handleSendClick()
-      }
-    }
-    document.addEventListener("keydown", listener)
-    return () => {
-      document.removeEventListener("keydown", listener)
-    }
-  }, [messageInput])
 
   return (
     <Card style={{width: 50 + 'vw'}}>
@@ -86,25 +98,47 @@ const ChatBox: FC<ChatBoxProps> = ({onClick}): ReactElement => {
                 label={message.user}
                 defaultValue={message.content}
                 variant="filled"
+                helperText={message.sentAt}
               />
               : <TextField
                 disabled
                 multiline
                 defaultValue={message.content}
                 variant="filled"
+                helperText={message.sentAt}
               />
           }/>
         })}
+        {showEmojiPicker && <Picker set="apple" onSelect={handleSelectEmoji}/>}
         <div ref={messagesEnd}/>
       </CardContent>
       <CardActions>
-        <TextField
-          value={messageInput}
-          fullWidth={true}
-          id="outlined-required"
-          onChange={handleInputChange}
-        />
-        <Button endIcon={<Icon>send</Icon>} onClick={handleSendClick}>Send</Button>
+        <form onSubmit={handleSendMessage} className="message-form">
+          <Button onClick={handleEmojiPicker}>=)</Button>
+          <ReactTextareaAutocomplete
+            className="message-input my-textarea"
+            name="messageInput"
+            value={messageInput}
+            loadingComponent={() => <span>Loading</span>}
+            onKeyPress={handleKeyPress}
+            onChange={handleInputChange}
+            placeholder="Compose your message and hit ENTER to send"
+            trigger={{
+              ':': {
+                dataProvider: token =>
+                  emojiIndex.search(token).map(o => ({
+                    colons: o.colons,
+                    native: o.native,
+                  })),
+                component: ({entity: {native, colons}}) => (
+                  <div>{`${colons} ${native}`}</div>
+                ),
+                output: item => `${item.native}`,
+              },
+            }}
+          />
+        </form>
+        <Button endIcon={<Icon>send</Icon>} onClick={handleSendMessage}>Send</Button>
       </CardActions>
     </Card>
   )

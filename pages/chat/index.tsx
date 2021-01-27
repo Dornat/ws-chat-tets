@@ -5,7 +5,7 @@ import Head from "next/head";
 import {useSelector, useDispatch} from 'react-redux'
 import {getUser} from '../../redux/selectors'
 import {useRouter} from "next/router";
-import {sendMessage, sendSysMessage, updateUserId} from "../../redux/actions";
+import {sendMessage, sendSysMessage} from "../../redux/actions";
 
 const Chat: FC = (): ReactElement => {
   const {id, name} = useSelector(getUser)
@@ -45,12 +45,14 @@ const Chat: FC = (): ReactElement => {
 
   }, [])
 
-  const handleMessageSend = (message) => {
-    socket.emit('sendMessage', id, message, (err) => {
-      if (err) {
-        console.log(err)
-      }
-    })
+  const handleMessageSend = (message: string) => {
+    if (message.length > 0) {
+      socket.emit('sendMessage', id, message, (err) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+    }
   }
 
   return (

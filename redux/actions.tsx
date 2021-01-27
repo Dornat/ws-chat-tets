@@ -1,5 +1,6 @@
 import {CREATE_USER, SEND_MESSAGE, UPDATE_USER_ID} from './actionTypes'
 import {v4} from 'uuid'
+import moment from 'moment'
 
 export const createUser = name => ({
   type: CREATE_USER,
@@ -21,7 +22,8 @@ export const sendMessage = (user, content) => ({
   payload: {
     type: 'user',
     user,
-    content
+    content,
+    sentAt: moment().format('HH:mm L')
   }
 })
 

@@ -1,5 +1,5 @@
 import {SEND_MESSAGE} from '../actionTypes'
-import message from './message.txt'
+import message from './message'
 
 const messages = (state = [], action) => {
   switch (action.type) {
