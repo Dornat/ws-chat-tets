@@ -3,9 +3,9 @@ const io = require('socket.io')(server, {});
 const {addUser, removeUser, getUser, getUsersInRoom} = require('./users');
 
 io.on('connection', (socket) => {
-  socket.on('join', ({id, name}, callback) => {
+  socket.on('join', ({name}, callback) => {
     console.log(`Trying to add user "${name}" with id: "${socket.id}"`);
-    const {error, user} = addUser({id, socketId: socket.id, name, room: 'Chat Room'});
+    const {error, user} = addUser({id: socket.id, name, room: 'Chat Room'});
 
     if (error) {
       console.log('Failed to add user. Error: ', error);
@@ -25,9 +25,12 @@ io.on('connection', (socket) => {
     callback();
   });
 
-  socket.on('sendMessage', (senderId, message, callback) => {
-    const user = getUser(senderId);
+  socket.on('sendMessage', (message, callback) => {
+    const user = getUser(socket.id);
     console.log(`In send message. Sender is: `, user);
+    if (!user) {
+      return callback('No user found')
+    }
 
     io.to(user.room).emit('message', {user: user.name, content: message});
 
@@ -40,7 +43,9 @@ io.on('connection', (socket) => {
 
     if (user) {
       console.log(`Removed user "${user.name}" with socket.id: "${socket.id}" from users`);
-      io.to(user.room).emit('message', {user: 'Admin', content: `${user.name} has left.`});
+      console.log(`users are:`, getUsersInRoom(user.room));
+      // io.to(user.room).emit('message', {user: 'Admin', content: `${user.name} has left.`});
+      socket.broadcast.to(user.room).emit('message', {type: 'system', content: `${user.name} has left`});
       // io.to(user.room).emit('roomData', {room: user.room, users: getUsersInRoom(user.room)});
     }
   })

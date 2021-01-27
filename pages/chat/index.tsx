@@ -10,23 +10,19 @@ import {sendMessage, sendSysMessage} from "../../redux/actions";
 let socket
 
 const Chat: FC = (): ReactElement => {
-  const {id, name} = useSelector(getUser)
+  const {name} = useSelector(getUser)
   const router = useRouter()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (id === undefined) router.push('/')
+    if (name === undefined) router.push('/')
 
     socket = io('http://localhost:6969', {
       transports: ['websocket'],
       rejectUnauthorized: false
     })
 
-    socket.on('connect', () => {
-      console.log(socket.id)
-    })
-
-    socket.emit('join', {id, name}, (err) => {
+    socket.emit('join', {name}, (err) => {
       if (err) {
         console.log(err)
       }
@@ -47,7 +43,7 @@ const Chat: FC = (): ReactElement => {
 
   const handleMessageSend = (message: string) => {
     if (message.length > 0) {
-      socket.emit('sendMessage', id, message, (err) => {
+      socket.emit('sendMessage', message, (err) => {
         if (err) {
           console.log(err)
         }

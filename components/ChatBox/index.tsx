@@ -4,11 +4,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Icon,
 } from '@material-ui/core'
 import {getMessages} from '../../redux/selectors'
 import {useSelector} from 'react-redux'
@@ -17,6 +12,9 @@ import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete'
 import 'emoji-mart/css/emoji-mart.css'
 import {MessageType} from '../../lib/types'
 import MessageHandler from './MessageHandler'
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import SendIcon from '@material-ui/icons/Send';
+import Header from "./Header";
 
 type ChatBoxProps = {
   sendMessageClick: (string) => void
@@ -41,7 +39,7 @@ const ChatBox: FC<ChatBoxProps> = ({sendMessageClick}): ReactElement => {
 
   const handleEmojiPicker = (event: React.FormEvent) => {
     event.preventDefault()
-    setShowEmojiPicker(true)
+    setShowEmojiPicker(!showEmojiPicker)
   }
 
   const handleSelectEmoji = ({native}) => {
@@ -63,19 +61,7 @@ const ChatBox: FC<ChatBoxProps> = ({sendMessageClick}): ReactElement => {
 
   return (
     <Card style={{width: 50 + 'vw'}}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-          >
-          </IconButton>
-          <Typography variant="h6" component="div">
-            Chat Room
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Header/>
       <CardContent style={{overflowY: 'scroll', height: 500}}>
         {messages.map((message, i) => (
           <MessageHandler key={i} message={message}/>
@@ -85,7 +71,7 @@ const ChatBox: FC<ChatBoxProps> = ({sendMessageClick}): ReactElement => {
       </CardContent>
       <CardActions>
         <form onSubmit={handleSendMessage} className="message-form">
-          <Button onClick={handleEmojiPicker}>=)</Button>
+          <Button onClick={handleEmojiPicker}><EmojiEmotionsIcon/></Button>
           <ReactTextareaAutocomplete
             className="message-input my-textarea"
             name="messageInput"
@@ -109,7 +95,7 @@ const ChatBox: FC<ChatBoxProps> = ({sendMessageClick}): ReactElement => {
             }}
           />
         </form>
-        <Button endIcon={<Icon>send</Icon>} onClick={handleSendMessage}>Send</Button>
+        <Button endIcon={<SendIcon/>} onClick={handleSendMessage}>Send</Button>
       </CardActions>
     </Card>
   )
