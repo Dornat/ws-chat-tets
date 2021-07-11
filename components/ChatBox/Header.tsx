@@ -1,9 +1,9 @@
-import React, {FC, ReactElement} from 'react'
-import {AppBar, Button, Card, Toolbar, Typography} from "@material-ui/core";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import Link from "next/link";
+import React, {ReactElement} from 'react'
+import {AppBar, Button, Toolbar, Typography} from '@material-ui/core'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import Link from 'next/link'
 
-const Header: FC = (): ReactElement => {
+const Header = React.memo((): ReactElement => {
   return (
     <AppBar position="static">
       <Toolbar>
@@ -18,6 +18,6 @@ const Header: FC = (): ReactElement => {
       </Toolbar>
     </AppBar>
   )
-}
+})
 
 export default Header

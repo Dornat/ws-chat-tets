@@ -1,9 +1,10 @@
 import React, {FC, ReactElement} from 'react'
-import {MessageType} from '../../lib/types'
+import {MessageType} from '../../../lib/types'
 import {Chip, TextField} from '@material-ui/core'
-import {getUser} from '../../redux/selectors'
+import {getUser} from '../../../redux/selectors'
 import {useSelector} from 'react-redux'
 import Message from './Message'
+import moment from "moment";
 
 type MessageHandlerProps = {
   message: MessageType
@@ -36,7 +37,7 @@ const MessageHandler: FC<MessageHandlerProps> = ({message}): ReactElement => {
         label={message.user}
         defaultValue={message.content}
         variant="filled"
-        helperText={message.sentAt}
+        helperText={moment.unix(message.sentAt).format('HH:mm D/MM/YYYY')}
       />
     }
 
@@ -45,12 +46,14 @@ const MessageHandler: FC<MessageHandlerProps> = ({message}): ReactElement => {
       multiline
       defaultValue={message.content}
       variant="filled"
-      helperText={message.sentAt}
+      helperText={moment.unix(message.sentAt).format('HH:mm D/MM/YYYY')}
     />
   }
 
   return (
-    <Message direction={figureOutMessageDirection(message)} element={getProperMessageElement(message)}/>
+    <Message direction={figureOutMessageDirection(message)}>
+      {getProperMessageElement(message)}
+    </Message>
   )
 }
 

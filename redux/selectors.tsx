@@ -7,3 +7,7 @@ export const getUser = (store): string => {
 export const getMessages = (store): Array<MessageType> => {
   return store.messages
 }
+
+export const getCurrentMessage = (store): string => {
+  return store.message
+}

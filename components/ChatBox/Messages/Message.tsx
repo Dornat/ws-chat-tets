@@ -1,15 +1,14 @@
 import React, {FC, ReactElement} from 'react'
 
 type MessageProps = {
-  direction: string,
-  element: any
+  direction: string
 }
 
-const Message: FC<MessageProps> = ({direction, element}): ReactElement => {
+const Message: FC<MessageProps> = ({direction, children}): ReactElement => {
   return (
     <div className="message">
       <div className={'message-' + direction}>
-        {element}
+        {children}
       </div>
     </div>
   )

@@ -170,8 +170,9 @@
   }
 }
 
-.MuiCardContent-root {
+.input-box {
   position: relative;
+
   .emoji-mart {
     //top: 330px;
     bottom: 330px;
@@ -185,6 +186,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 0;
+  margin-left: 8px;
 
   .rta {
     width: 100%;

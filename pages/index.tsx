@@ -1,9 +1,8 @@
 import Head from 'next/head'
 import React, {FC, ReactElement} from 'react'
-import LoginForm from "../components/LoginForm";
+import LoginFormContainer from '../containers/LoginFormContainer'
 
 const Home: FC = (): ReactElement => {
-
   return (
     <div className="container">
       <Head>
@@ -12,7 +11,7 @@ const Home: FC = (): ReactElement => {
       </Head>
 
       <main className="main">
-        <LoginForm/>
+        <LoginFormContainer/>
       </main>
     </div>
   )

@@ -1,14 +1,19 @@
-import {SEND_MESSAGE} from '../actionTypes'
+import {CREATE_MESSAGE, SEND_MESSAGE} from '../actionTypes'
 
 const message = (state = {}, action) => {
+  const {id, type, user, content, sentAt} = action.payload
   switch (action.type) {
     case SEND_MESSAGE:
-      const {type, user, content, sentAt} = action.payload
       return {
+        id,
         type,
         user,
         content,
         sentAt
+      }
+    case CREATE_MESSAGE:
+      return {
+        content
       }
     default:
       return state

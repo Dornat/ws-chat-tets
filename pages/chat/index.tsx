@@ -6,6 +6,7 @@ import {useSelector, useDispatch} from 'react-redux'
 import {getUser} from '../../redux/selectors'
 import {useRouter} from "next/router";
 import {sendMessage, sendSysMessage} from "../../redux/actions";
+import ChatContainer from "../../containers/ChatContainer";
 
 let socket
 
@@ -59,7 +60,8 @@ const Chat: FC = (): ReactElement => {
       </Head>
 
       <main className="main">
-        <ChatBox sendMessageClick={handleMessageSend}/>
+        {/*<ChatBox sendMessageClick={handleMessageSend}/>*/}
+        <ChatContainer sendMessageClick={handleMessageSend}/>
       </main>
     </div>
   )

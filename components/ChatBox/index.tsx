@@ -11,7 +11,7 @@ import {Picker, emojiIndex} from 'emoji-mart'
 import ReactTextareaAutocomplete from '@webscopeio/react-textarea-autocomplete'
 import 'emoji-mart/css/emoji-mart.css'
 import {MessageType} from '../../lib/types'
-import MessageHandler from './MessageHandler'
+import MessageHandler from './Messages/MessageHandler'
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import SendIcon from '@material-ui/icons/Send';
 import Header from "./Header";
